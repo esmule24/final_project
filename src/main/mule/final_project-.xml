@@ -220,7 +220,53 @@ ns ns0 http://www.cdi.com/employees
 		</ee:transform>
     </flow>
     <flow name="get:\employees:final_project--config">
+		<ee:transform doc:name="Transform Message" doc:id="10cd6a62-ec6d-4107-a157-0eded12a3225" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Consume" doc:id="89b54ef8-abd5-4505-bf47-61fd7ed83db7" config-ref="Web_Service_Consumer_Config" operation="GetAllEmployees"/>
+		<ee:transform doc:name="Transform Message" doc:id="8e4fba48-ae84-4579-9c2a-3f6bac796ea3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.cdi.com/employees
+---
+payload.body.ns0#GetAllEmployeesResponse.*ns0#Employees map ( employee , indexOfEmployee ) -> {
+	firstName: employee.ns0#firstName default "",
+	lastName: employee.ns0#lastName default "",
+	department: employee.ns0#department default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
     <flow name="post:\employees:application\json:final_project--config">
+		<ee:transform doc:name="Transform Message" doc:id="c0d1724c-3881-4ddf-8c4b-a40e8a2f734c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Consume" doc:id="6a72529d-25cb-436e-bacd-40cf320c7154" config-ref="Web_Service_Consumer_Config" operation="AddEmployee"/>
+		<ee:transform doc:name="Transform Message" doc:id="c57bcce6-4464-4895-8bb4-a6c4fc584c18" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.cdi.com/employees
+---
+{
+	firstName: payload.body.ns0#AddEmployeeResponse.ns0#Employee.ns0#firstName default "",
+	lastName: payload.body.ns0#AddEmployeeResponse.ns0#Employee.ns0#lastName default "",
+	department: payload.body.ns0#AddEmployeeResponse.ns0#Employee.ns0#department default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
 </mule>
