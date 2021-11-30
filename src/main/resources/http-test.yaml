@@ -1,3 +1,5 @@
 http:
-  host: "localhost"
-  port: "8086"
+  wsdl: http://71.178.245.221:6062/ws/employees.wsdl
+  service: EmployeePortService
+  port: EmployeePortSoap11
+  address: http://71.178.245.221:6062/ws
