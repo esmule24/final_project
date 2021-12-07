@@ -3,14 +3,14 @@
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <http:listener-config name="final_project--httpListenerConfig">
-        <http:listener-connection host="${http.host}" port="${http.port}" />
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
     <apikit:config name="final_project--config" api="resource::e0183c77-c53c-4fa0-a9ff-244b04d31f35:final_project:1.0.5:raml:zip:final_project-.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="c4be9a49-e418-4be0-9d5d-d3b281a4ca65" >
-		<wsc:connection wsdlLocation="http://71.178.245.221:6061/ws/employees.wsdl" service="EmployeePortService" port="EmployeePortSoap11" address="http://71.178.245.221:6061/ws"/>
+		<wsc:connection wsdlLocation="${wsdls.wsdl}" service="${wsdls.service}" port="${wsdls.port}" address="${wsdls.address}"/>
 	</wsc:config>
-	<configuration-properties doc:name="Configuration properties" doc:id="35e0d90e-31d7-4b2d-9fd1-ed9ad1c99b0c" file="http-${env}.yaml" />
-	<global-property doc:name="Global Property" doc:id="636239f7-d791-40e9-b0d3-426313dbc095" name="env" value="dev" />
+	<configuration-properties doc:name="Configuration properties" doc:id="d972d7f2-767a-4f20-a31f-f411c60f4a88" file="http-${env}.yaml" />
+	<global-property doc:name="Global Property" doc:id="97e662ee-7f93-4816-9c1f-d16b1058d9d4" name="env" value="dev" />
 	<flow name="final_project--main">
         <http:listener config-ref="final_project--httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -131,9 +131,9 @@ output application/json
         </error-handler>
     </flow>
     <flow name="put:\employees\(id):application\json:final_project--config">
-		<ee:transform doc:name="Transform Message" doc:id="0d556395-1673-446c-8685-dfa6d7394e30" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<ee:transform doc:name="Transform Message" doc:id="0d556395-1673-446c-8685-dfa6d7394e30">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ns ns0 http://www.cdi.com/employees
 ---
@@ -149,8 +149,8 @@ ns ns0 http://www.cdi.com/employees
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<wsc:consume doc:name="Consume" doc:id="e474dd05-8ccc-430f-8b26-24680410677f" config-ref="Web_Service_Consumer_Config" operation="UpdateEmployee"/>
-		<ee:transform doc:name="Transform Message" doc:id="16832147-14cc-4535-a4a2-09ec5c94de4d" >
+		<wsc:consume operation="UpdateEmployee" doc:name="Consume" doc:id="6fb0751e-238e-421d-a7c1-249b2777043d" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="d694770c-4c56-49c8-af9f-15903e1d407d" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -190,9 +190,9 @@ payload.body.DeleteEmployeeResponse]]></ee:set-payload>
 		</ee:transform>
     </flow>
     <flow name="get:\employees\(id):final_project--config">
-		<ee:transform doc:name="Transform Message" doc:id="d38cc00d-68c3-46a4-8c2d-1ad373d8f60a">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+		<ee:transform doc:name="Transform Message" doc:id="bf484951-8c0e-4784-b5d2-e8d7ff9cf1ef" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/xml
 ns ns0 http://www.cdi.com/employees
 ---
@@ -204,9 +204,9 @@ ns ns0 http://www.cdi.com/employees
 			</ee:message>
 		</ee:transform>
 		<wsc:consume operation="GetEmployee" doc:name="Consume" doc:id="3e7cc742-3a44-4b3c-a2c6-9868973172bd" config-ref="Web_Service_Consumer_Config" />
-		<ee:transform doc:name="Transform Message" doc:id="9628aa6f-8c60-490d-bf6c-442c9d02b452">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+		<ee:transform doc:name="Transform Message" doc:id="90e8b15e-b15e-4b81-8e3d-b569bc02336f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ns ns0 http://www.cdi.com/employees
 ---
@@ -219,8 +219,32 @@ ns ns0 http://www.cdi.com/employees
 			</ee:message>
 		</ee:transform>
     </flow>
-    <flow name="get:\employees:final_project--config">
-    </flow>
-    <flow name="post:\employees:application\json:final_project--config">
+	<flow name="get:\employees:final_project--config">
+		<ee:transform doc:name="Transform Message" doc:id="01eae360-7d36-45cb-94b9-b836d5c6327b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.cdi.com/employees
+---
+{
+	ns0#GetAllEmployeesRequest: null
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Consume" doc:id="b2527732-3f0e-4b0c-9c69-5099d495c171" config-ref="Web_Service_Consumer_Config" operation="GetAllEmployees"/>
+		<ee:transform doc:name="Transform Message" doc:id="d4471400-07b5-4fdd-8a01-abc7d4613ca1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.cdi.com/employees
+---
+payload.body.ns0#GetAllEmployeesResponse.*ns0#Employees map ( employee , indexOfEmployee ) -> {
+	id: employee.ns0#id as String default "",
+	firstName: employee.ns0#firstName default "",
+	lastName: employee.ns0#lastName default "",
+	department: employee.ns0#department default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
 </mule>
