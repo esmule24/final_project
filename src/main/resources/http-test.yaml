@@ -1,6 +1,5 @@
 http:
-<<<<<<< HEAD
-  port: 8082
+  port: "8084"
   
 wsdls:
   wsdl: http://71.178.245.221:6062/ws/employees.wsdl
@@ -9,9 +8,3 @@ wsdls:
   address: http://71.178.245.221:6062/ws
   
    
-=======
-  wsdl: http://71.178.245.221:6062/ws/employees.wsdl
-  service: EmployeePortService
-  port: EmployeePortSoap11
-  address: http://71.178.245.221:6062/ws
->>>>>>> 86e8758cfa1390d55e4e8cf09736e0a33a17c95f
