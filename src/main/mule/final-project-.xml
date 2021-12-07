@@ -3,6 +3,7 @@
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <http:listener-config name="final_project--httpListenerConfig">
+<<<<<<< HEAD:src/main/mule/final-project-.xml
         <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
     <apikit:config name="final_project--config" api="resource::e0183c77-c53c-4fa0-a9ff-244b04d31f35:final_project:1.0.5:raml:zip:final_project-.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
@@ -11,6 +12,16 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</wsc:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="d972d7f2-767a-4f20-a31f-f411c60f4a88" file="http-${env}.yaml" />
 	<global-property doc:name="Global Property" doc:id="97e662ee-7f93-4816-9c1f-d16b1058d9d4" name="env" value="dev" />
+=======
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="final_project--config" api="resource::e0183c77-c53c-4fa0-a9ff-244b04d31f35:final_project:1.0.5:raml:zip:final_project-.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="c4be9a49-e418-4be0-9d5d-d3b281a4ca65" >
+		<wsc:connection wsdlLocation="${http.wsdl}" port="${http.port}" address="${http.address}" service="${http.service}"/>
+	</wsc:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="df310188-7063-46fe-b5a3-078f6135b497" file="http-${env}.yaml" />
+	<global-property doc:name="Global Property" doc:id="d1e65c0b-8c1c-4571-a488-dac865c17c49" name="env" value="dev" />
+>>>>>>> 86e8758cfa1390d55e4e8cf09736e0a33a17c95f:src/main/mule/final_project-.xml
 	<flow name="final_project--main">
         <http:listener config-ref="final_project--httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -219,8 +230,13 @@ ns ns0 http://www.cdi.com/employees
 			</ee:message>
 		</ee:transform>
     </flow>
+<<<<<<< HEAD:src/main/mule/final-project-.xml
 	<flow name="get:\employees:final_project--config">
 		<ee:transform doc:name="Transform Message" doc:id="01eae360-7d36-45cb-94b9-b836d5c6327b" >
+=======
+    <flow name="get:\employees:final_project--config">
+		<ee:transform doc:name="Transform Message" doc:id="b496335d-ff47-4023-806b-ea8b5746e763" >
+>>>>>>> 86e8758cfa1390d55e4e8cf09736e0a33a17c95f:src/main/mule/final_project-.xml
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/xml
@@ -231,8 +247,13 @@ ns ns0 http://www.cdi.com/employees
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+<<<<<<< HEAD:src/main/mule/final-project-.xml
 		<wsc:consume doc:name="Consume" doc:id="b2527732-3f0e-4b0c-9c69-5099d495c171" config-ref="Web_Service_Consumer_Config" operation="GetAllEmployees"/>
 		<ee:transform doc:name="Transform Message" doc:id="d4471400-07b5-4fdd-8a01-abc7d4613ca1" >
+=======
+		<wsc:consume doc:name="Consume" doc:id="89b54ef8-abd5-4505-bf47-61fd7ed83db7" config-ref="Web_Service_Consumer_Config" operation="GetAllEmployees"/>
+		<ee:transform doc:name="Transform Message" doc:id="8e4fba48-ae84-4579-9c2a-3f6bac796ea3" >
+>>>>>>> 86e8758cfa1390d55e4e8cf09736e0a33a17c95f:src/main/mule/final_project-.xml
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -246,5 +267,42 @@ payload.body.ns0#GetAllEmployeesResponse.*ns0#Employees map ( employee , indexOf
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+<<<<<<< HEAD:src/main/mule/final-project-.xml
+=======
+    </flow>
+    <flow name="post:\employees:application\json:final_project--config">
+		<ee:transform doc:name="Transform Message" doc:id="9e759af4-aa85-47bb-8cb5-faf5e77336a4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.cdi.com/employees
+---
+{
+	ns0#UpdateEmployeeRequest: {
+		ns0#Employee: {
+			ns0#firstName: payload.firstName,
+			ns0#lastName: payload.lastName,
+			ns0#department: payload.department
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Consume" doc:id="6a72529d-25cb-436e-bacd-40cf320c7154" config-ref="Web_Service_Consumer_Config" operation="AddEmployee"/>
+		<ee:transform doc:name="Transform Message" doc:id="2d15cec0-d3ef-4436-b955-126e4eedcd30" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.cdi.com/employees
+---
+{
+	id: payload.body.ns0#UpdateEmployeeResponse.ns0#Employee.ns0#id as String default "",
+	firstName: payload.body.ns0#UpdateEmployeeResponse.ns0#Employee.ns0#firstName default "",
+	lastName: payload.body.ns0#UpdateEmployeeResponse.ns0#Employee.ns0#lastName default "",
+	department: payload.body.ns0#UpdateEmployeeResponse.ns0#Employee.ns0#department default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+>>>>>>> 86e8758cfa1390d55e4e8cf09736e0a33a17c95f:src/main/mule/final_project-.xml
     </flow>
 </mule>

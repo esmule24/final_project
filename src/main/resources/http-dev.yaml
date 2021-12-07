@@ -1,9 +1,16 @@
 http:
+<<<<<<< HEAD
   port: "8086"
 
 wsdls:
+=======
+>>>>>>> 86e8758cfa1390d55e4e8cf09736e0a33a17c95f
   wsdl: http://71.178.245.221:6061/ws/employees.wsdl
   service: EmployeePortService
   port: EmployeePortSoap11
   address: http://71.178.245.221:6061/ws
+<<<<<<< HEAD
    
+=======
+  
+>>>>>>> 86e8758cfa1390d55e4e8cf09736e0a33a17c95f
