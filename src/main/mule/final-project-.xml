@@ -10,7 +10,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<wsc:connection wsdlLocation="${wsdls.wsdl}" service="${wsdls.service}" port="${wsdls.port}" address="${wsdls.address}"/>
 	</wsc:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="d972d7f2-767a-4f20-a31f-f411c60f4a88" file="http-${env}.yaml" />
-	<global-property doc:name="Global Property" doc:id="97e662ee-7f93-4816-9c1f-d16b1058d9d4" name="env" value="dev" />
 	<flow name="final_project--main">
         <http:listener config-ref="final_project--httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -101,6 +100,18 @@ output application/json
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ed19cdcc-2b56-4109-93d4-49e4c221b632" >
+				<ee:transform doc:name="Transform Message" doc:id="92856877-f5e5-4fec-8e6f-bc546e4be5e4" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Server Error"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
         </error-handler>
     </flow>
     <flow name="final_project--console">
@@ -227,7 +238,9 @@ output application/xml
 ns ns0 http://www.cdi.com/employees
 ---
 {
-	ns0#GetAllEmployeesRequest: null
+	ns0#GetAllEmployeesRequest: {
+		
+	}
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
